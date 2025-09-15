@@ -1,51 +1,45 @@
-﻿Controle de Telefonia
-Descrição
+📱 Controle de Telefonia
 
-Aplicativo simples em Python usando Tkinter para gerenciar linhas de telefonia.
-Permite cadastrar linhas, consultar, atualizar e visualizar os dados em uma tabela.
+Um aplicativo simples em Python + Tkinter para gerenciar linhas de telefonia.
 
-O programa valida campos, formata números de telefone e valores, garantindo consistência das informações.
+✨ Funcionalidades
 
-Funcionalidades
+✔️ Cadastro de linhas com:
 
-Adicionar novas linhas telefônicas com:
-
-Número (11 dígitos)
+Número de telefone (11 dígitos, formatado automaticamente)
 
 Responsável / Usuário
 
 Operadora (Vivo, Claro, Tim)
 
-Valor da linha
+Valor da linha (formatado em R$)
 
-Centro de custo
+Centro de custo (em maiúsculo)
 
-Validação de campos obrigatórios e formatação de dados.
+✔️ Validação dos campos antes de salvar.
+✔️ Navegação entre campos com Enter ou setas ⬆️⬇️.
+✔️ Tabela para exibir os dados cadastrados.
+✔️ Limpeza automática dos campos após salvar.
 
-Navegação entre campos usando Enter e setas ↑ ↓.
+⚠️ As funções Consultar e Atualizar ainda estão em desenvolvimento.
 
-Tabela para exibir os dados cadastrados.
-
-Limpeza automática dos campos após salvar.
-
-Observação: Ainda faltam implementar as funções Consultar e Atualizar.
-
-Tecnologias utilizadas
+🛠️ Tecnologias utilizadas
 
 Python 3.x
 
-Tkinter (interface gráfica)
+Tkinter
+ (biblioteca padrão do Python)
 
-ttk (componentes avançados do Tkinter)
+ttk (para widgets mais modernos, como o Combobox)
 
-Como usar
+🚀 Como executar
 
-Clone o repositório:
+Clone este repositório:
 
 git clone <URL_DO_REPOSITORIO>
 
 
-Navegue até a pasta do projeto:
+Acesse a pasta:
 
 cd controle-telefonia
 
@@ -54,18 +48,26 @@ Execute o programa:
 
 python main.py
 
-
-Preencha os campos e clique em Salvar para adicionar uma linha à tabela.
-
-Estrutura do projeto
+📂 Estrutura do projeto
 controle-telefonia/
 │
-├─ main.py           # Código principal do app
-├─ README.md         # Este arquivo
-└─ requirements.txt  # Dependências (opcional: Tkinter já vem com Python)
+├── main.py           
+├── README.md       
+└── requirements.txt 
 
-Observações
+📦 Dependências
 
-Este projeto não necessita de virtualenv se você tiver Python instalado.
+Criei um arquivo requirements.txt para manter o padrão de projetos Python.
+Mesmo o Tkinter já vindo junto com o Python, deixei registrado:
 
-Tkinter já vem embutido no Python padrão, então não precisa instalar nada extra.
+tk
+
+Instalação (opcional):
+
+pip install -r requirements.txt
+
+🎯 Próximos passos
+
+Implementar função Consultar para buscar linhas já cadastradas.
+
+Implementar função Atualizar para editar registros existentes.
