@@ -1,0 +1,5 @@
+# requirements.txt
+# Dependências do projeto Controle de Telefonia
+# Tkinter já vem com o Python, então não é necessário instalar
+# Caso queira instalar explicitamente (Windows):
+tk
