@@ -137,6 +137,7 @@ class ControleTelefonica:
         self.cursor.execute("INSERT INTO dados1 VALUES(?, ?, ?, ?, ?)",( linha.numero, linha.responsavel, linha.operadora, valorf, linha.centro))
         self.banco.commit()
         self.banco.close()
+       
         messagebox.showinfo(title=None, message="Linha salva com sucesso!")
         #limpa os campos
         self.limpar()
@@ -149,8 +150,23 @@ class ControleTelefonica:
         
 
     def consultar(self):
-        pass
+        self.consulta_linha = self.entry1.get().strip() 
+        self.consulta_nome= self.entry2.get().strip()
 
+        resultados = []
+        if self.consulta_linha:
+          self.cursor.execute("SELECT * FROM dados WHERE linha LIKE ?",(f"{self.consulta_linha}",));
+          resultados = self.cursor.fetchall()
+        elif self.consulta_nome:
+          self.cursor.execute("SELECT * FROM dados WHERE linha LIKE ?",(f"{self.consulta_nome}",));
+          resultados = self.cursor.fetchall()
+        else:
+            messagebox.showerror(message="Nenhum campo selecionado para pesquisa. Informe a linha ou usuário")
+        for linha in resultados:
+            self.tabela.insert("", "end", values=linha)
+      
+    def fechar(self):
+        self.banco.close()
 
     def atualizar(self):
         pass
