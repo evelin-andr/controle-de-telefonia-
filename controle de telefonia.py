@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from turtle import up
+import sqlite3
 
 class LinhaTelefonica():
     def __init__(self, numero, responsavel, operadora, valor, centro):
@@ -16,6 +17,8 @@ class ControleTelefonica:
         self.janela.title("Controle de Telefonia")
         self.dados = []
         self.entries= []
+        self.banco = sqlite3.connect("banco_telefonia.db")
+        self.cursor = self.banco.cursor()
         self.front()
 
     def front(self):
@@ -103,14 +106,14 @@ class ControleTelefonica:
         centro = self.entry5.get().strip()
 
          #verifica se ta tudo preenchido 
-        if not numero or not responsavel or not operadora or not valor or not centro:
-         messagebox.showerror(title=None, message="Preencha todos os campos!")
-         return
+        # if not numero or not responsavel or not operadora or not valor or not centro:
+        #  messagebox.showerror(title=None, message="Preencha todos os campos!")
+        #  return
 
-        #verifica se tem 11 digitos 
-        if len(numero) != 11: 
-            messagebox.showerror(title=None, message="Número de telefone inválido, digite um número com 11 digitos!")
-            return
+        # #verifica se tem 11 digitos 
+        # if len(numero) != 11: 
+        #     messagebox.showerror(title=None, message="Número de telefone inválido, digite um número com 11 digitos!")
+        #     return
         # verifica e altera o valor para float    
         try: 
             valor = float(valor)
@@ -129,9 +132,12 @@ class ControleTelefonica:
         #adiciona na tabela 
         linha = LinhaTelefonica(numero, responsavel,operadora, valor, centro)
         self.dados.append(linha)
-        self.tabela.insert("","end", values=(linha.numero, linha.responsavel, linha.operadora, valorf, linha.centro)) 
+        self.tabela.insert("","end", values=(linha.numero, linha.responsavel, linha.operadora, valor, linha.centro)) 
+        #adiciona no banco
+        self.cursor.execute("INSERT INTO dados1 VALUES(?, ?, ?, ?, ?)",( linha.numero, linha.responsavel, linha.operadora, valorf, linha.centro))
+        self.banco.commit()
+        self.banco.close()
         messagebox.showinfo(title=None, message="Linha salva com sucesso!")
-
         #limpa os campos
         self.limpar()
     def limpar(self):
@@ -140,6 +146,7 @@ class ControleTelefonica:
         self.entry3.set("")
         self.entry4.delete(0, tk.END)
         self.entry5.delete(0, tk.END)
+        
 
     def consultar(self):
         pass
