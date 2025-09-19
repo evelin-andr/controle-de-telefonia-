@@ -106,14 +106,13 @@ class ControleTelefonica:
         centro = self.entry5.get().strip()
 
          #verifica se ta tudo preenchido 
-        # if not numero or not responsavel or not operadora or not valor or not centro:
-        #  messagebox.showerror(title=None, message="Preencha todos os campos!")
-        #  return
-
-        # #verifica se tem 11 digitos 
-        # if len(numero) != 11: 
-        #     messagebox.showerror(title=None, message="Número de telefone inválido, digite um número com 11 digitos!")
-        #     return
+        if not numero or not responsavel or not operadora or not valor or not centro:
+         messagebox.showerror(title=None, message="Preencha todos os campos!")
+         return
+        #verifica se tem 11 digitos 
+        if len(numero) != 11: 
+            messagebox.showerror(title=None, message="Número de telefone inválido, digite um número com 11 digitos!")
+            return
         # verifica e altera o valor para float    
         try: 
             valor = float(valor)
@@ -126,7 +125,7 @@ class ControleTelefonica:
         valorf = f'R$ {valort:.2f}'.replace(",","x").replace(".",",").replace("x",",")
         centro= centro.upper()
         responsavel = responsavel.title()
-        numero = f'( {numero[0:2]}) {numero[2:7]}-{numero[7:11]}'
+        numero = f'({numero[0:2]}) {numero[2:7]}-{numero[7:11]}'
 
         #-------------------------------------------------------------------------------
         #adiciona na tabela 
@@ -150,19 +149,25 @@ class ControleTelefonica:
         
 
     def consultar(self):
+        for item in self.tabela.get_children():
+          self.tabela.delete(item)
+
         self.consulta_linha = self.entry1.get().strip() 
         self.consulta_nome= self.entry2.get().strip()
 
         resultados = []
+       
         if self.consulta_linha:
-          self.cursor.execute("SELECT * FROM dados WHERE linha LIKE ?",(f"{self.consulta_linha}",));
+          self.cursor.execute("SELECT * FROM dados1 WHERE linha LIKE ?",(f"{self.consulta_linha}",));
           resultados = self.cursor.fetchall()
         elif self.consulta_nome:
-          self.cursor.execute("SELECT * FROM dados WHERE linha LIKE ?",(f"{self.consulta_nome}",));
+          self.cursor.execute("SELECT * FROM dados1 WHERE responsavel LIKE ?",(f"{self.consulta_nome}",));
           resultados = self.cursor.fetchall()
         else:
             messagebox.showerror(message="Nenhum campo selecionado para pesquisa. Informe a linha ou usuário")
+        
         for linha in resultados:
+            
             self.tabela.insert("", "end", values=linha)
       
     def fechar(self):
@@ -170,8 +175,9 @@ class ControleTelefonica:
 
     def atualizar(self):
         pass
-    
-
+    def excluir(self):
+    #criar botao para inativar o registro do banco de dados para quando for consulyar vir só os registros ativos.
+       pass
 
 
 if __name__ == '__main__':
