@@ -1,73 +1,125 @@
-📱 Controle de Telefonia
+📞 Controle de Telefonia
 
-Um aplicativo simples em Python + Tkinter para gerenciar linhas de telefonia.
+Um sistema desktop feito em Python com Tkinter, desenvolvido para gerenciar linhas telefônicas corporativas.
+O programa permite cadastrar, consultar, atualizar, inativar e exportar informações de linhas telefônicas de forma prática e segura, com integração a um banco de dados SQLite e exportação para Excel (.xlsx) via OpenPyXL.
 
-✨ Funcionalidades
+💡 Funcionalidades
 
-✔️ Cadastro de linhas com:
+✅ Cadastro de Linhas Telefônicas
 
-Número de telefone (11 dígitos, formatado automaticamente)
+Armazena número, responsável, operadora, valor e centro de custo.
 
-Responsável / Usuário
+Valida número (deve conter 11 dígitos).
 
-Operadora (Vivo, Claro, Tim)
+Impede duplicidade de cadastro.
 
-Valor da linha (formatado em R$)
+🔍 Consulta de Linhas
 
-Centro de custo (em maiúsculo)
+Busca por número ou responsável.
 
-✔️ Validação dos campos antes de salvar.
-✔️ Navegação entre campos com Enter ou setas ⬆️⬇️.
-✔️ Tabela para exibir os dados cadastrados.
-✔️ Limpeza automática dos campos após salvar.
+Exibe resultados ativos e oferece opção para visualizar linhas inativas.
 
-⚠️ As funções Consultar e Atualizar ainda estão em desenvolvimento.
+🔄 Atualização de Dados
 
-🛠️ Tecnologias utilizadas
+Permite editar registros existentes, com confirmação antes de salvar as alterações.
 
-Python 3.x
+❌ Inativação (Exclusão Lógica)
 
-Tkinter
- (biblioteca padrão do Python)
+Inativa registros sem apagá-los do banco (mantém histórico).
 
-ttk (para widgets mais modernos, como o Combobox)
+📤 Exportação Personalizada
 
-🚀 Como executar
+Gera planilha Excel com filtros por operadora (Vivo, Claro, Tim) e status (ativas/inativas/todas).
 
-Clone este repositório:
+Exporta automaticamente para:
 
-git clone <URL_DO_REPOSITORIO>
+C:\ProgramData\ControleTelefonia\Exportacoes
 
 
-Acesse a pasta:
+💾 Banco de Dados Local (SQLite)
 
-cd controle-telefonia
+O banco é criado em:
+
+C:\ProgramData\ControleTelefonia\banco_telefonia.db
+
+🖥️ Interface
+
+O sistema possui uma interface intuitiva, feita com Tkinter + ttk, incluindo:
+
+Campos de entrada (Entry e Combobox)
+
+Botões com ícones e atalhos de teclado
+
+Tabela de visualização de dados (Treeview)
+
+Janela de exportação separada, com filtros visuais
+
+🎨 Cores e estilo:
+Fundo amarelo-claro #f6fa84 e botões destacados para boa legibilidade.
+
+🗂️ Estrutura do Projeto
+ControleTelefonia/
+│
+├── controle_telefonia.py      # Código principal (interface + lógica)
+├── banco_telefonia.db         # Banco de dados (criado automaticamente)
+└── Exportacoes/               # Pasta de planilhas geradas (criada automaticamente)
+
+⚙️ Tecnologias Utilizadas
+
+Python 3.10+
+
+Tkinter → Interface gráfica
+
+SQLite3 → Banco de dados local
+
+OpenPyXL → Geração de planilhas Excel
+
+Datetime / OS → Manipulação de datas e diretórios
+
+🚀 Como Executar
+
+Instale as dependências (se necessário):
+
+pip install openpyxl
+
+
+Baixe ou clone o repositório:
+
+git clone https://github.com/seuusuario/ControleTelefonia.git
 
 
 Execute o programa:
 
-python main.py
+python controle_telefonia.py
 
-📂 Estrutura do projeto
-controle-telefonia/
-│
-├── main.py           
-├── README.md       
-└── requirements.txt 
 
-📦 Dependências
+Pronto! O sistema abrirá em uma janela gráfica.
 
-Criei um arquivo requirements.txt para manter o padrão de projetos Python.
-Mesmo o Tkinter já vindo junto com o Python, deixei registrado:
+📋 Exemplo de Uso
 
-tk
+Preencha todos os campos e clique em 💾 Salvar.
 
-Instalação (opcional):
+Consulte pelo número ou nome em 🔍 Consultar.
 
-pip install -r requirements.txt
+Selecione uma linha e clique em 🔄 Atualizar para editar.
 
-🎯 Próximos passos
+Clique em ❌ Excluir para inativar uma linha.
 
-Implementar função Consultar para buscar linhas já cadastradas.
+Use 📤 Exportar para gerar uma planilha com filtros.
 
-Implementar função Atualizar para editar registros existentes.
+🧠 Boas Práticas e Dicas
+
+Sempre feche o programa corretamente para evitar bloqueio no banco SQLite.
+
+Prefira números de telefone sem formatação (apenas dígitos).
+
+Use valores decimais com ponto (.), exemplo: 49.99.
+
+Para evitar erros, mantenha permissões de escrita na pasta C:\ProgramData.
+
+👨‍💻 Autor
+
+Desenvolvido por: Velin
+🧩 Estudante de Desenvolvimento de Sistemas
+📅 Versão: 1.0
+📍 Local: Brasil 🇧🇷
