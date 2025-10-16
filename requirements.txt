@@ -1,5 +1,3 @@
-# requirements.txt
-# Dependências do projeto Controle de Telefonia
-# Tkinter já vem com o Python, então não é necessário instalar
-# Caso queira instalar explicitamente (Windows):
-tk
+# Requisitos para o sistema de controle de linhas telefônicas
+openpyxl>=3.1.2
+# Requer Python 3.10 ou superior
