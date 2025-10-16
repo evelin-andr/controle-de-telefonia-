@@ -1,7 +1,6 @@
 import tkinter as tk
-from tkinter import Label, ttk
+from tkinter import ttk
 from tkinter import messagebox
-from turtle import up
 import sqlite3
 import datetime
 import openpyxl
@@ -20,14 +19,13 @@ class LinhaTelefonica():
        self.data_cadastro = data_cadastro
 
 class ControleTelefonica:
-    resultados = []
+    
     def __init__(self, janela):
         self.janela = janela 
         self.janela.title("Controle de Telefonia")
-        self.janela.configure(bg="#f6fa84")  # Nova cor de fundo: azul clara
-        self.dados = []
+        self.janela.configure(bg="#f6fa84")
         self.entries= []
-        DB_DIR = "C:\\ProgramData\\ControleTelefonia"
+        DB_DIR = "C:\\ProgramData\\Exportacoes"
         DB_FILE = os.path.join(DB_DIR, "banco_telefonia.db")
         
         try:
@@ -133,13 +131,13 @@ class ControleTelefonica:
     def focus_next(self, event):
         atual= self.entries.index(event.widget)
         proximo = (atual + 1) % len(self.entries)
-        self.entries[proximo].focus_set()          
+        self.entries[proximo].focus_set()       
+
     def focus_prev(self, event):
         atual = self.entries.index(event.widget)
         anterior = (atual - 1) % len(self.entries)
         self.entries[anterior].focus_set()
 
-    # Métodos 
     def salvar(self):
         numero = self.entry1.get().strip()
         responsavel = self.entry2.get().strip()
@@ -149,7 +147,7 @@ class ControleTelefonica:
         status = 1
         data_cadastro = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
 
-         #verifica se ta tudo preenchido 
+        #verifica se ta tudo preenchido 
         if not numero or not responsavel or not operadora or not valor or not centro:
          messagebox.showerror(title=None, message="Preencha todos os campos!")
          return
@@ -181,10 +179,8 @@ class ControleTelefonica:
 
 
         else:  
-         #usa o salvar pra salvar no banco  
+        #usa o salvar pra salvar no banco  
         #transformar os dados pra ficar bonito na tabela 
-            valort = int(valor * 100)/ 100
-            valorf = f'R${valort:.2f}'.replace(",", "x").replace(".", ",").replace("x", ",")
             centro= centro.upper()
             responsavel = responsavel.title()
             numero = f'({numero[0:2]}){numero[2:7]}-{numero[7:11]}'
@@ -202,7 +198,6 @@ class ControleTelefonica:
             #adiciona na tabela 
             
             linha = LinhaTelefonica(numero, responsavel,operadora, valor, centro, status, data_cadastro)
-            self.dados.append(linha)
             self.tabela.insert("","end", values=(linha.numero, linha.responsavel, linha.operadora, linha.valor, linha.centro, linha.status, linha.data_cadastro)) 
             #adiciona no banco 
             self.cursor.execute("INSERT INTO dados VALUES(?, ?, ?, ?, ?, ?,?)", (linha.numero, linha.responsavel, linha.operadora, linha.valor, linha.centro, linha.status, linha.data_cadastro))
@@ -218,8 +213,7 @@ class ControleTelefonica:
         self.entry3.set("")
         self.entry4.delete(0, tk.END)
         self.entry5.delete(0, tk.END)
-        
-        
+           
     def consultar(self):
         # limpa tabela antes da consulta
         for item in self.tabela.get_children():
@@ -339,8 +333,7 @@ class ControleTelefonica:
         except sqlite3.Error as e:
             messagebox.showerror("Erro no Banco de Dados", f"Ocorreu um erro ao inativar a linha: {e}")
 
-
-    def exportar(self): #parte front do exportar
+    def exportar(self):
         for item in self.tabela.get_children():
             self.tabela.delete(item)
 
@@ -379,11 +372,8 @@ class ControleTelefonica:
         btn_cancelar = tk.Button(frame_botoes, text="Cancelar", command=janela_export.destroy, width=12)
         btn_cancelar.pack(side="left", padx=10)
   
-
-    #parte lógica do exportar
     def exportar_dados(self, operadora_filtro, status_filtro):
-
-    # Monta consulta conforme filtros
+     # Monta consulta conforme filtros
      consulta = "SELECT linha, responsavel, operadora, valor, centro_c, status, data_cadastro FROM dados WHERE 1=1"
      params = []
  
@@ -404,7 +394,7 @@ class ControleTelefonica:
          messagebox.showinfo("Sem dados", "Nenhum dado encontrado com esses filtros.")
          return
  
-    # Cria a planilha
+     # Cria a planilha
      criar_planilha = openpyxl.Workbook()
      cp = criar_planilha.active
      cp.title = "Linhas Telefônicas"
@@ -418,7 +408,7 @@ class ControleTelefonica:
          linha[5] = "Ativa" if linha[5] == 1 else "Inativa"  # Converte status
          cp.append(linha)
  
-     pasta_export = "C:\\ProgramData\\ControleTelefonia\\Exportacoes"
+     pasta_export = "C:\\ProgramData\\Exportacoes"
      try:
          os.makedirs(pasta_export, exist_ok=True)
      except Exception as e:
@@ -449,8 +439,7 @@ class ControleTelefonica:
 
 
      self.fechar()
-
-
+   
 if __name__ == '__main__':
     janela = tk.Tk()
     app = ControleTelefonica(janela)
