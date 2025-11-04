@@ -43,16 +43,9 @@ O banco é criado em:
 C:\ProgramData\ControleTelefonia\banco_telefonia.db
 
 🖥️ Interface
+  <img width="792" height="519" alt="Captura de tela 2025-11-04 153642" src="https://github.com/user-attachments/assets/d48e536d-52be-4dc7-b9d6-c426e1951e69" />
+  <img width="420" height="298" alt="Captura de tela 2025-11-04 153802" src="https://github.com/user-attachments/assets/5c176a82-a526-42c1-9107-49fac91d76af" />
 
-O sistema possui uma interface intuitiva, feita com Tkinter + ttk, incluindo:
-
-Campos de entrada (Entry e Combobox)
-
-Botões com ícones e atalhos de teclado
-
-Tabela de visualização de dados (Treeview)
-
-Janela de exportação separada, com filtros visuais
 
 🎨 Cores e estilo:
 Fundo amarelo-claro #f6fa84 e botões destacados para boa legibilidade.
@@ -119,7 +112,5 @@ Para evitar erros, mantenha permissões de escrita na pasta C:\ProgramData.
 
 👨‍💻 Autor
 
-Desenvolvido por: Velin
-🧩 Estudante de Desenvolvimento de Sistemas
-📅 Versão: 1.0
-📍 Local: Brasil 🇧🇷
+Desenvolvido por: Evelin Silva
+
