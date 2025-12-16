@@ -9,6 +9,7 @@ import os
 
 
 class LinhaTelefonica():
+#classe que armazena os dados da linha 
     def __init__(self, numero, responsavel, operadora, valor, centro, status, data_cadastro):
        self.numero = numero
        self.responsavel = responsavel
@@ -17,15 +18,16 @@ class LinhaTelefonica():
        self.centro = centro 
        self.status = status
        self.data_cadastro = data_cadastro
-
 class ControleTelefonica:
     
     def __init__(self, janela):
         self.janela = janela 
-        self.janela.title("Controle de Telefonia")
-        self.janela.configure(bg="#f6fa84")
+        self.janela.title("Controle de Telefonia")  
+        self.janela.configure(bg="lightgreen")
+
+        #diretório para exportação da planilha
         self.entries= []
-        DB_DIR = "C:\\ProgramData\\Exportacoes"
+        DB_DIR = "C:\\Exportacoes"
         DB_FILE = os.path.join(DB_DIR, "banco_telefonia.db")
         
         try:
@@ -34,38 +36,57 @@ class ControleTelefonica:
             messagebox.showerror("Erro de Diretório", f"Não foi possível criar o diretório: {DB_DIR}\nErro: {e}")
             self.janela.destroy() 
             return
+
+        #conexão com o banco de dados
         self.banco = sqlite3.connect(DB_FILE)
         self.cursor = self.banco.cursor()
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS dados (linha TEXT, responsavel TEXT, operadora TEXT, valor REAL, centro_c TEXT, status INTEGER, data_cadastro TEXT)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS dados (linha TEXT, responsavel TEXT, operadora TEXT, valor REAL, centro_c TEXT, status INTEGER, data_cadastro TEXT)") 
         self.modo_atualizar = False
         self.linha_em_edicao = None
-       
         self.front()
+       
+    def check_numero_limite(self, texto):
+        #só aceita se for número no telefone e tiver no máximo 11 dígitos
+        if texto == "":
+            return True
+        if texto.isdigit() and len(texto) <= 11:
+            return True
+        else:
+            return False
+
+    def check_apenas_texto(self, texto):
+        # Permite  apenas texto em centro de custo e que não contenha dígitos
+        if texto == "":
+            return True
+        return not any(char.isdigit() for char in texto)
+
+        
 
     def front(self):
        
         # Labels e Entry
+        vld_numero = (self.janela.register(self.check_numero_limite), '%P')
         self.label1 = tk.Label(self.janela, text="Linha | Número:")
-        self.label1.grid(row=0, column=0)
-        self.label1.configure(bg="#f6fa84")
+        self.label1.grid(row=1, column=0)
+        self.label1.configure(bg="lightgreen")
 
-        self.entry1 = tk.Entry(self.janela)
-        self.entry1.grid(row=0, column=1)
+        self.entry1 = tk.Entry(self.janela, validate="key", validatecommand=vld_numero)
+        self.entry1.grid(row=1, column=1)
         self.entry1.bind("<Return>", lambda event: self.entry2.focus_set())
         self.entries.append(self.entry1)
         
         self.label2 = tk.Label(self.janela, text="Responsável | Usuário:")
-        self.label2.grid(row=1, column=0)
-        self.label2.configure(bg="#f6fa84")
+        self.label2.grid(row=2, column=0)
+        self.label2.configure(bg="lightgreen")
 
         self.entry2 = tk.Entry(self.janela)
-        self.entry2.grid(row=1, column=1)
+        self.entry2.grid(row=2, column=1)
         self.entry2.bind("<Return>", lambda event: self.entry3.focus_set())
         self.entries.append(self.entry2)
 
         self.label3 = tk.Label(self.janela, text="Operadora:")
         self.label3.grid(row=3, column=0)
-        self.label3.configure(bg="#f6fa84")
+        self.label3.configure(bg="lightgreen")
 
         operadoras = ["Vivo", "Claro", "Tim"]
         self.entry3 = ttk.Combobox(self.janela, values=operadoras, width=17)
@@ -76,18 +97,20 @@ class ControleTelefonica:
 
         self.label4 = tk.Label(self.janela, text="Valor da Linha:")
         self.label4.grid(row=4, column=0)
-        self.label4.configure(bg="#f6fa84")
+        self.label4.configure(bg="lightgreen")
 
         self.entry4 = tk.Entry(self.janela)
         self.entry4.grid(row=4, column=1)
         self.entry4.bind("<Return>", lambda event: self.entry5.focus_set())
         self.entries.append(self.entry4)
          
-        self.label5 = tk.Label(self.janela, text="Centro de custo:")
+        self.label5 = tk.Label(self.janela, text="Setor de custo:")
         self.label5.grid(row=5, column=0)
-        self.label5.configure(bg="#f6fa84")
+        self.label5.configure(bg="lightgreen")
 
-        self.entry5 = tk.Entry(self.janela)
+        vcmd = (self.janela.register(self.check_apenas_texto), '%P')
+
+        self.entry5 = tk.Entry(self.janela, validate="key", validatecommand=vcmd)
         self.entry5.grid(row=5, column=1)
         self.entry5.bind("<Return>", lambda event: self.salvar())
         self.entries.append(self.entry5)
@@ -98,16 +121,15 @@ class ControleTelefonica:
         self.button1.bind("<Return>", lambda event: self.entry1.focus_set())
 
         self.button2 = tk.Button(self.janela, text="🔍 Consultar", command=self.consultar, bd=3)
-        self.button2.grid(row=3, column=2, padx=5, pady=5, sticky="w")
+        self.button2.grid(row=2, column=2, padx=5, pady=5, sticky="w")
         
         self.button3 = tk.Button(self.janela, text="🔄 Atualizar", command=self.atualizar,bd=3)
-        self.button3.grid(row=4, column=2, padx=5, pady=5, sticky='w')
-
-        self.button4 = tk.Button(self.janela, text="❌ Excluir", command=self.excluir, bd=3)
-        self.button4.grid(row=5, column=2, padx=5, pady=5, sticky='w')
+        self.button3.grid(row=3, column=2, padx=5, pady=5, sticky='w')
+        self.button4 = tk.Button(self.janela, text="❌ Inativar", command=self.excluir, bd=3)
+        self.button4.grid(row=4, column=2, padx=5, pady=5, sticky='w')
 
         self.button5 = tk.Button(self.janela, text="📤 Exportar", command=self.exportar, bd=3)
-        self.button5.grid(row=6, column=2, padx=5, pady=5, sticky='w')
+        self.button5.grid(row=5 , column=2, padx=5, pady=5, sticky='w')
         
         
         # Tabela
@@ -123,11 +145,13 @@ class ControleTelefonica:
         for col in self.tabela["columns"]:
             self.tabela.column(col, width=150, anchor='center') 
 
-        self.entry1.focus_set() #pra sempre começar pelo primeiro campo quando abrir o programa 
+        #pra sempre começar pelo primeiro campo quando abrir o programa 
+        self.entry1.focus_set() 
         for entry in self.entries:
             entry.bind("<Down>", self.focus_next)
             entry.bind("<Up>", self.focus_prev)
 
+    #navegação entre os campos com as setas 
     def focus_next(self, event):
         atual= self.entries.index(event.widget)
         proximo = (atual + 1) % len(self.entries)
@@ -136,7 +160,7 @@ class ControleTelefonica:
     def focus_prev(self, event):
         atual = self.entries.index(event.widget)
         anterior = (atual - 1) % len(self.entries)
-        self.entries[anterior].focus_set()
+        self.entries[anterior].focus_set()  
 
     def salvar(self):
         numero = self.entry1.get().strip()
@@ -147,15 +171,14 @@ class ControleTelefonica:
         status = 1
         data_cadastro = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
 
-        #verifica se ta tudo preenchido 
+        #verificação de campos vazios
         if not numero or not responsavel or not operadora or not valor or not centro:
          messagebox.showerror(title=None, message="Preencha todos os campos!")
          return
-        #verifica se tem 11 digitos 
+
         if len(numero) != 11: 
             messagebox.showerror(title=None, message="Número de telefone inválido, digite um número com 11 digitos!")
-            return
-        # verifica e altera o valor para float    
+            return  
         try: 
             valor = float(valor)
         except:
@@ -184,7 +207,8 @@ class ControleTelefonica:
             centro= centro.upper()
             responsavel = responsavel.title()
             numero = f'({numero[0:2]}){numero[2:7]}-{numero[7:11]}'
-            # verifica duplicidade no banco antes de salvar
+            valor = f"R$ {valor:.2f}"
+            # verifica duplicidade 
             try:
                 self.cursor.execute("SELECT 1 FROM dados WHERE linha = ? LIMIT 1", (numero,))
                 if self.cursor.fetchone():
@@ -222,7 +246,7 @@ class ControleTelefonica:
         self.consulta_linha = self.entry1.get().strip()
         self.consulta_nome = self.entry2.get().strip()
 
-        if self.consulta_nome == "" and self.consulta_linha == "":
+        if self.consulta_linha == "" and self.consulta_nome == "":
             messagebox.showwarning(title=None, message="Nenhum dado para consulta! Informe a linha ou o responsável.")
             return
 
@@ -230,7 +254,7 @@ class ControleTelefonica:
             messagebox.showerror(title=None, message="Número de telefone inválido, digite um número com 11 digitos!")
             return
 
-        
+        #consulta pelo número de telefone
         if self.consulta_linha != "":
             self.consulta_linha = f'({self.consulta_linha[0:2]}){self.consulta_linha[2:7]}-{self.consulta_linha[7:11]}'
      
@@ -241,13 +265,15 @@ class ControleTelefonica:
             if not resultados:
                 self.cursor.execute("SELECT linha, responsavel, operadora, valor, centro_c, status FROM dados WHERE status = 0 AND linha = ?",(self.consulta_linha,))
                 inativa = self.cursor.fetchall()
-                
+                if not resultados:
+                        messagebox.showinfo(title= "Erro",message=f"Não foi encontrado nenhum registro referente a '{self.consulta_linha}' no banco de dados")
+        
                 if inativa:
                     resposta = messagebox.askyesno("Linha inativada",f"A linha {self.consulta_linha} está inativada. Deseja visualizar o histórico dessa linha?")
 
                     if resposta:
-                        resultados = inativa
-
+                        resultados = inativa 
+        #consulta pelo nome
         elif self.consulta_nome:
 
             self.cursor.execute("SELECT linha, responsavel, operadora, valor, centro_c FROM dados WHERE status = 1 AND responsavel LIKE ?",(f"%{self.consulta_nome}%",))
@@ -261,7 +287,7 @@ class ControleTelefonica:
                     if messagebox.askyesno( "Registros inativados",f"Encontramos linhas inativadas para '{self.consulta_nome}'. Deseja visualizar?"):
                         resultados = inativas
                 if not resultados:
-                    messagebox.showinfo(title= "Erro",message=f"Não foi encontrado nenhum registro referente a {self.consulta_nome} no banco de dados")
+                    messagebox.showinfo(title= "Erro",message=f"Não foi encontrado nenhum registro referente a '{self.consulta_nome}' no banco de dados")
             
         # exibe na tabela
         for linha in resultados:  
@@ -359,12 +385,14 @@ class ControleTelefonica:
 
         filtro_status = tk.Frame(janela_export)
         filtro_status.pack(pady=5)
+        
 
         for st in status_op: tk.Radiobutton(filtro_status, text=st, variable= self.status_exportar, value=st ).pack(side="left", padx=5)
 
      # --- Botões (Exportar / Cancelar) ---
         frame_botoes = tk.Frame(janela_export)
         frame_botoes.pack(pady=20)
+        
         
         btn_exportar = tk.Button(frame_botoes, text="Exportar", command=lambda: self.exportar_dados( self.operadora_exportar.get(), self.status_exportar.get() ), width=12 )
         btn_exportar.pack(side="left", padx=10)
@@ -408,7 +436,7 @@ class ControleTelefonica:
          linha[5] = "Ativa" if linha[5] == 1 else "Inativa"  # Converte status
          cp.append(linha)
  
-     pasta_export = "C:\\ProgramData\\Exportacoes"
+     pasta_export = "C:\\Exportacoes"
      try:
          os.makedirs(pasta_export, exist_ok=True)
      except Exception as e:
